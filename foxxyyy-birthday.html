@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Foxxyyy!</title>
+<style>
+  @font-face {
+    font-family: 'system-fallback';
+  }
+  :root{
+    --bg: #150a2e;
+    --bg2: #22103f;
+    --pink: #ff2e9e;
+    --yellow: #ffe14d;
+    --cyan: #35e6e0;
+    --orange: #ff8a3d;
+    --white: #fff8f0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background: radial-gradient(ellipse at top, var(--bg2), var(--bg) 70%);
+    color: var(--white);
+    font-family: 'Baloo 2', 'Comic Sans MS', system-ui, sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration: 0.001s !important; animation-iteration-count: 1 !important; transition: none !important; }
+  }
+
+  canvas#confetti{
+    position:fixed; inset:0; pointer-events:none; z-index:50;
+  }
+
+  .stars{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,.5), transparent),
+      radial-gradient(2px 2px at 120px 90px, rgba(255,255,255,.4), transparent),
+      radial-gradient(1.5px 1.5px at 200px 150px, rgba(255,255,255,.6), transparent),
+      radial-gradient(2px 2px at 300px 60px, rgba(255,255,255,.3), transparent),
+      radial-gradient(1.5px 1.5px at 400px 200px, rgba(255,255,255,.5), transparent);
+    background-repeat: repeat;
+    background-size: 420px 260px;
+    opacity:.7;
+  }
+
+  .wrap{ position:relative; z-index:2; max-width:760px; margin:0 auto; padding: 48px 24px 100px; text-align:center; }
+
+  .balloons{ position:fixed; inset:0; z-index:1; pointer-events:none; }
+  .balloon{
+    position:absolute; bottom:-140px; width:56px; height:70px; border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+    animation: float 9s linear infinite;
+    opacity:.9;
+  }
+  .balloon::after{
+    content:''; position:absolute; left:50%; top:100%; width:1px; height:60px; background: rgba(255,255,255,.4);
+    transform: translateX(-50%);
+  }
+  .b1{ left:6%; background: var(--pink); animation-delay:0s; }
+  .b2{ left:18%; background: var(--yellow); animation-delay:1.4s; width:44px; height:56px;}
+  .b3{ left:32%; background: var(--cyan); animation-delay:2.8s; }
+  .b4{ left:50%; background: var(--orange); animation-delay:.8s; width:50px; height:64px;}
+  .b5{ left:68%; background: var(--pink); animation-delay:3.6s; width:46px; height:58px;}
+  .b6{ left:82%; background: var(--yellow); animation-delay:2.1s; }
+  .b7{ left:92%; background: var(--cyan); animation-delay:4.4s; width:40px; height:52px;}
+
+  @keyframes float{
+    0%{ transform: translateY(0) rotate(-4deg); }
+    50%{ transform: translateY(-60vh) rotate(4deg); }
+    100%{ transform: translateY(-120vh) rotate(-4deg); }
+  }
+
+  .eyebrow{
+    display:inline-block; font-size:.95rem; letter-spacing:.03em; color: var(--cyan);
+    background: rgba(53,230,224,.1); border:1px solid rgba(53,230,224,.35);
+    padding:6px 16px; border-radius:999px; margin-bottom:22px;
+  }
+
+  h1.name{
+    font-size: clamp(2.8rem, 11vw, 6.2rem);
+    line-height: .95;
+    font-weight: 800;
+    background: linear-gradient(100deg, var(--pink), var(--orange) 45%, var(--yellow) 75%, var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter: drop-shadow(0 6px 24px rgba(255,46,158,.35));
+    margin-bottom: 6px;
+    animation: wiggle 4.2s ease-in-out infinite;
+  }
+  @keyframes wiggle{
+    0%,100%{ transform: rotate(-1.2deg); }
+    50%{ transform: rotate(1.2deg); }
+  }
+
+  .subline{
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
+    color: var(--white);
+    opacity:.92;
+    margin-bottom: 40px;
+  }
+  .subline b{ color: var(--yellow); }
+
+  .cake-scene{
+    position:relative; display:inline-block; margin: 20px 0 8px;
+    animation: bounce 2.4s ease-in-out infinite;
+  }
+  @keyframes bounce{
+    0%,100%{ transform: translateY(0) scale(1); }
+    50%{ transform: translateY(-10px) scale(1.03); }
+  }
+  .cake-emoji{ font-size:5.5rem; line-height:1; }
+  .candles{
+    position:absolute; top:-2.1rem; left:50%; transform: translateX(-50%);
+    display:flex; gap:6px;
+  }
+  .candle{
+    font-size:1.6rem; cursor:pointer; user-select:none; transition: filter .2s ease, transform .2s ease;
+    filter: drop-shadow(0 0 6px rgba(255,225,77,.8));
+  }
+  .candle:hover{ transform: translateY(-2px); }
+  .candle[data-lit="false"]{
+    filter: grayscale(1) brightness(.6);
+    animation: smoke 1.4s ease-out forwards;
+  }
+  @keyframes smoke{
+    0%{ opacity:1; }
+    60%{ opacity:.7; transform: translateY(-4px); }
+    100%{ opacity:.55; transform: translateY(-8px); }
+  }
+  .cake-hint{ font-size:.85rem; opacity:.65; margin-top:6px; margin-bottom:36px; }
+
+  .card{
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.12);
+    backdrop-filter: blur(6px);
+    border-radius: 22px;
+    padding: 28px 26px;
+    margin-bottom: 26px;
+    text-align:left;
+  }
+  .card h2{
+    font-size:1.3rem; color: var(--pink); margin-bottom:10px;
+  }
+  .card p{ line-height:1.65; font-size:1.05rem; color: var(--white); opacity:.95; }
+
+  .btn-row{ display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin: 34px 0 10px; }
+  button{
+    font-family:inherit;
+    font-size: 1.05rem;
+    font-weight:700;
+    padding: 14px 26px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    transition: transform .15s ease;
+  }
+  button:active{ transform: scale(.95); }
+  button:focus-visible{ outline: 3px solid var(--cyan); outline-offset:3px; }
+
+  .btn-primary{
+    background: linear-gradient(95deg, var(--pink), var(--orange));
+    color: #1a0b2e;
+  }
+  .btn-secondary{
+    background: transparent;
+    border: 2px solid var(--cyan);
+    color: var(--cyan);
+  }
+  .btn-primary:hover, .btn-secondary:hover{ transform: translateY(-2px); }
+
+  .games{
+    margin-top: 34px; text-align:left;
+    position:relative; z-index:3;
+    background: rgba(13,7,28,.6);
+    backdrop-filter: blur(14px);
+    border-radius: 28px;
+    padding: 30px 22px 20px;
+    border: 1px solid rgba(255,255,255,.08);
+  }
+  .games h2{
+    color: var(--yellow); margin-bottom: 6px; font-size:1.35rem; text-align:center;
+  }
+  .games-sub{
+    text-align:center; opacity:.75; font-size:.95rem; margin-bottom:22px;
+  }
+
+  .game-card{
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+  }
+  .game-card h3{ font-size:1.1rem; color: var(--cyan); margin-bottom:8px; }
+  .game-card p.desc{ font-size:.95rem; opacity:.85; margin-bottom:14px; line-height:1.5; }
+
+  .game-stats{
+    display:flex; gap:18px; margin-bottom:14px; font-size:.95rem; flex-wrap:wrap;
+  }
+  .game-stats span b{ color: var(--yellow); }
+
+  .memory-grid{
+    display:grid; grid-template-columns: repeat(4, 1fr); gap:10px;
+  }
+  .memory-card{
+    aspect-ratio: 1 / 1; cursor:pointer; user-select:none;
+    perspective: 700px;
+  }
+  .card-inner{
+    position:relative; width:100%; height:100%;
+    transition: transform .55s cubic-bezier(.2,.8,.3,1);
+    transform-style: preserve-3d;
+  }
+  .memory-card.flipped .card-inner,
+  .memory-card.matched .card-inner{
+    transform: rotateY(180deg);
+  }
+  .card-face{
+    position:absolute; inset:0; backface-visibility:hidden;
+    border-radius:14px; display:flex; align-items:center; justify-content:center;
+  }
+  .card-front{
+    background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.18);
+    font-size:1.1rem; color: rgba(255,255,255,.45); font-weight:700;
+  }
+  .card-back{
+    background: rgba(255,225,77,.18); border:1px solid rgba(255,225,77,.5);
+    font-size:1.8rem; transform: rotateY(180deg);
+  }
+  .memory-card.matched .card-back{
+    background: rgba(53,230,224,.22); border-color: rgba(53,230,224,.55);
+  }
+
+  .catch-field{
+    position:relative; height: 260px; border-radius:16px;
+    background: rgba(0,0,0,.25); border:1px dashed rgba(255,255,255,.2);
+    overflow:hidden; touch-action:none;
+  }
+  .catch-item{
+    position:absolute; font-size:1.8rem; top:-40px; user-select:none;
+  }
+  .catch-basket{
+    position:absolute; bottom:8px; width:64px; height:40px; font-size:2.2rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  footer{ margin-top: 50px; font-size:.9rem; opacity:.55; }
+
+  .party-toggle{
+    position:fixed; top:18px; right:18px; z-index:60;
+    background: rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.25);
+    color:var(--white); padding:10px 16px; border-radius:999px; font-size:.9rem; font-weight:700;
+    cursor:pointer; backdrop-filter: blur(6px);
+  }
+  .party-toggle:hover{ background: rgba(255,255,255,.16); }
+
+  body.party-on{ animation: partybg 1.6s linear infinite; }
+  @keyframes partybg{
+    0%{ filter: hue-rotate(0deg) saturate(1); }
+    50%{ filter: hue-rotate(45deg) saturate(1.3); }
+    100%{ filter: hue-rotate(0deg) saturate(1); }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+<canvas id="confetti"></canvas>
+
+<div class="balloons">
+  <div class="balloon b1"></div>
+  <div class="balloon b2"></div>
+  <div class="balloon b3"></div>
+  <div class="balloon b4"></div>
+  <div class="balloon b5"></div>
+  <div class="balloon b6"></div>
+  <div class="balloon b7"></div>
+</div>
+
+<button class="party-toggle" id="partyBtn" aria-pressed="false">🎊 Party Mode ON karo</button>
+
+<div class="wrap">
+  <span class="eyebrow">Aaj ka special din</span>
+  <h1 class="name">FOXXYYY</h1>
+  <p class="subline">Happy Birthday bhai, tera <b>din</b>, teri <b>party</b>, teri hi entry hogi aaj! 🔥</p>
+
+  <div class="cake-scene">
+    <div class="cake-emoji">🎂</div>
+    <div class="candles" id="candles">
+      <span class="candle" data-lit="true">🕯️</span>
+      <span class="candle" data-lit="true">🕯️</span>
+      <span class="candle" data-lit="true">🕯️</span>
+      <span class="candle" data-lit="true">🕯️</span>
+      <span class="candle" data-lit="true">🕯️</span>
+    </div>
+  </div>
+  <p class="cake-hint" id="cakeHint">Har candle pe click kar aur ek ek karke bujha de</p>
+
+  <div class="card">
+    <h2>Bhai se bhai tak</h2>
+    <p>Foxxyyy, tu wo banda hai jiske saath bakwaas bhi seedha ek achha kissa ban jaati hai. Chahe raat ki calls ho ya random plans, tere saath sab kuch double masti wala ho jaata hai. Aaj tera din hai, toh full paisa vasool party banti hai.</p>
+  </div>
+
+  <div class="card">
+    <h2>Dua aur dosti</h2>
+    <p>Upar wale se bas itni hi guzarish hai ki tu hamesha hasta rahe, life mein har cheez jaldi milti rahe, aur apni is dosti ki chemistry kabhi kam na ho. Cake kaato, gaane bajao, aur is saal ko apna bana lo. Happy Birthday, king.</p>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-primary" id="confettiBtn">🎉 Confetti chhodo</button>
+    <button class="btn-secondary" id="danceBtn">💃 Balloons uda do</button>
+  </div>
+
+  <div class="games">
+    <h2>Party Games</h2>
+    <p class="games-sub">Thodi masti karte hain, dono games try karke dekh</p>
+
+    <div class="game-card">
+      <h3>Memory Match</h3>
+      <p class="desc">Sab cards ulti padi hain, do do card palat ke jodi mila. Kam se kam moves mein poora karke dikha.</p>
+      <div class="game-stats">
+        <span>Moves: <b id="memMoves">0</b></span>
+        <span>Jodiyan: <b id="memMatches">0</b>/8</span>
+      </div>
+      <div class="memory-grid" id="memoryGrid"></div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn-secondary" id="memResetBtn">Naya game</button>
+      </div>
+    </div>
+
+    <div class="game-card">
+      <h3>Catch the Gift</h3>
+      <p class="desc">Gift aur cake upar se girenge, basket ko left right buttons ya arrow keys se ghuma ke pakad. Bomb se bach ke rehna.</p>
+      <div class="game-stats">
+        <span>Score: <b id="catchScore">0</b></span>
+        <span>Time: <b id="catchTime">15</b>s</span>
+      </div>
+      <div class="catch-field" id="catchField">
+        <div class="catch-basket" id="catchBasket" style="left:50%;">🧺</div>
+      </div>
+      <div class="btn-row" style="margin-top:14px;">
+        <button class="btn-secondary" id="catchLeftBtn">Left</button>
+        <button class="btn-primary" id="catchStartBtn">Start</button>
+        <button class="btn-secondary" id="catchRightBtn">Right</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>Made with masti for Foxxyyy</footer>
+</div>
+
+<script>
+  // Confetti canvas
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+
+  const colors = ['#ff2e9e','#ffe14d','#35e6e0','#ff8a3d','#ffffff'];
+  let particles = [];
+
+  function burst(count){
+    for(let i=0;i<count;i++){
+      particles.push({
+        x: Math.random()*canvas.width,
+        y: -20 - Math.random()*200,
+        r: 4 + Math.random()*6,
+        c: colors[Math.floor(Math.random()*colors.length)],
+        vx: -2 + Math.random()*4,
+        vy: 2 + Math.random()*3,
+        rot: Math.random()*360,
+        vrot: -6 + Math.random()*12,
+        shape: Math.random() > 0.5 ? 'rect' : 'circle'
+      });
+    }
+  }
+
+  function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach(p=>{
+      p.x += p.vx; p.y += p.vy; p.rot += p.vrot;
+      ctx.save();
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle = p.c;
+      if(p.shape==='rect'){ ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r); }
+      else{ ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill(); }
+      ctx.restore();
+    });
+    particles = particles.filter(p=> p.y < canvas.height + 30);
+    requestAnimationFrame(animate);
+  }
+  animate();
+
+  document.getElementById('confettiBtn').addEventListener('click', ()=> burst(120));
+
+  // Candle blowing
+  const candleEls = document.querySelectorAll('.candle');
+  const cakeHint = document.getElementById('cakeHint');
+  let litCount = candleEls.length;
+  candleEls.forEach(c=>{
+    c.addEventListener('click', ()=>{
+      if(c.getAttribute('data-lit') === 'false') return;
+      c.setAttribute('data-lit','false');
+      litCount--;
+      burst(20);
+      if(litCount === 0){
+        cakeHint.textContent = 'Saare candles bujh gaye, ab wish pakki ho gayi';
+        burst(150);
+      } else {
+        cakeHint.textContent = litCount + ' candle baaki hai';
+      }
+    });
+  });
+
+  // auto small burst on load
+  setTimeout(()=> burst(80), 600);
+
+  // Party mode toggle
+  const partyBtn = document.getElementById('partyBtn');
+  let partyOn = false;
+  partyBtn.addEventListener('click', ()=>{
+    partyOn = !partyOn;
+    document.body.classList.toggle('party-on', partyOn);
+    partyBtn.setAttribute('aria-pressed', String(partyOn));
+    partyBtn.textContent = partyOn ? '🎊 Party Mode ON hai!' : '🎊 Party Mode ON karo';
+    if(partyOn){
+      burst(100);
+      const interval = setInterval(()=>{ if(!partyOn){ clearInterval(interval); return;} burst(30); }, 1200);
+    }
+  });
+
+  // "Uda do balloons" button just re-triggers balloon animation by cloning
+  document.getElementById('danceBtn').addEventListener('click', ()=>{
+    document.querySelectorAll('.balloon').forEach(b=>{
+      b.style.animation = 'none';
+      void b.offsetWidth;
+      b.style.animation = null;
+    });
+    burst(60);
+  });
+
+  // Memory Match game
+  const memoryEmojis = ['🎂','🎁','🎈','🎉','🕯️','🎊','🍰','🥳'];
+  const memoryGrid = document.getElementById('memoryGrid');
+  const memMovesEl = document.getElementById('memMoves');
+  const memMatchesEl = document.getElementById('memMatches');
+  const memResetBtn = document.getElementById('memResetBtn');
+  let memCards = [], memFlipped = [], memMatched = 0, memMoves = 0, memLock = false;
+
+  function shuffle(arr){
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function buildMemoryGame(){
+    memoryGrid.innerHTML = '';
+    memCards = shuffle([...memoryEmojis, ...memoryEmojis]);
+    memFlipped = [];
+    memMatched = 0;
+    memMoves = 0;
+    memLock = false;
+    memMovesEl.textContent = '0';
+    memMatchesEl.textContent = '0';
+    memCards.forEach((emoji, idx)=>{
+      const card = document.createElement('div');
+      card.className = 'memory-card';
+      card.dataset.emoji = emoji;
+      card.dataset.idx = idx;
+      card.innerHTML = '<div class="card-inner"><div class="card-face card-front">?</div><div class="card-face card-back">' + emoji + '</div></div>';
+      card.addEventListener('click', ()=> flipMemoryCard(card));
+      memoryGrid.appendChild(card);
+    });
+  }
+
+  function flipMemoryCard(card){
+    if(memLock) return;
+    if(card.classList.contains('flipped') || card.classList.contains('matched')) return;
+    card.classList.add('flipped');
+    memFlipped.push(card);
+    if(memFlipped.length === 2){
+      memMoves++;
+      memMovesEl.textContent = memMoves;
+      memLock = true;
+      const [a, b] = memFlipped;
+      if(a.dataset.emoji === b.dataset.emoji){
+        setTimeout(()=>{
+          a.classList.add('matched');
+          b.classList.add('matched');
+          memMatched++;
+          memMatchesEl.textContent = memMatched;
+          memFlipped = [];
+          memLock = false;
+          burst(30);
+          if(memMatched === memoryEmojis.length){
+            burst(150);
+          }
+        }, 350);
+      } else {
+        setTimeout(()=>{
+          a.classList.remove('flipped');
+          b.classList.remove('flipped');
+          memFlipped = [];
+          memLock = false;
+        }, 900);
+      }
+    }
+  }
+
+  memResetBtn.addEventListener('click', buildMemoryGame);
+  buildMemoryGame();
+
+  // Catch the Gift game
+  const catchField = document.getElementById('catchField');
+  const catchBasket = document.getElementById('catchBasket');
+  const catchScoreEl = document.getElementById('catchScore');
+  const catchTimeEl = document.getElementById('catchTime');
+  const catchStartBtn = document.getElementById('catchStartBtn');
+  const catchLeftBtn = document.getElementById('catchLeftBtn');
+  const catchRightBtn = document.getElementById('catchRightBtn');
+  const goodItems = ['🎁','🎂','🎈'];
+  const badItems = ['💣'];
+  let basketPos = 50;
+  let catchScore = 0, catchActive = false, catchSpawner = null, catchTimer = null, catchFallers = [];
+
+  function moveBasket(dir){
+    basketPos = Math.min(92, Math.max(4, basketPos + dir * 8));
+    catchBasket.style.left = basketPos + '%';
+  }
+  catchLeftBtn.addEventListener('click', ()=> moveBasket(-1));
+  catchRightBtn.addEventListener('click', ()=> moveBasket(1));
+  document.addEventListener('keydown', (e)=>{
+    if(!catchActive) return;
+    if(e.key === 'ArrowLeft') moveBasket(-1);
+    if(e.key === 'ArrowRight') moveBasket(1);
+  });
+
+  function spawnCatchItem(){
+    const isBad = Math.random() < 0.25;
+    const el = document.createElement('div');
+    el.className = 'catch-item';
+    el.textContent = isBad ? badItems[0] : goodItems[Math.floor(Math.random()*goodItems.length)];
+    const left = 4 + Math.random() * 88;
+    el.style.left = left + '%';
+    el.dataset.bad = isBad ? 'true' : 'false';
+    el.dataset.top = -40;
+    catchField.appendChild(el);
+    catchFallers.push(el);
+  }
+
+  function catchTick(){
+    const fieldHeight = catchField.clientHeight;
+    catchFallers.forEach(el=>{
+      let top = parseFloat(el.dataset.top) + 6;
+      el.dataset.top = top;
+      el.style.top = top + 'px';
+      const basketLeftPx = (basketPos / 100) * catchField.clientWidth;
+      const itemLeftPx = (parseFloat(el.style.left) / 100) * catchField.clientWidth;
+      const caught = top > fieldHeight - 60 && top < fieldHeight - 10 && Math.abs(itemLeftPx - basketLeftPx) < 34;
+      if(caught){
+        if(el.dataset.bad === 'true'){
+          catchScore = Math.max(0, catchScore - 2);
+        } else {
+          catchScore++;
+          burst(15);
+        }
+        catchScoreEl.textContent = catchScore;
+        el.remove();
+        el.dataset.done = 'true';
+      } else if(top > fieldHeight){
+        el.remove();
+        el.dataset.done = 'true';
+      }
+    });
+    catchFallers = catchFallers.filter(el=> el.dataset.done !== 'true');
+  }
+
+  catchStartBtn.addEventListener('click', ()=>{
+    if(catchActive) return;
+    catchActive = true;
+    catchScore = 0;
+    catchScoreEl.textContent = '0';
+    catchFallers.forEach(el=> el.remove());
+    catchFallers = [];
+    let timeLeft = 15;
+    catchTimeEl.textContent = timeLeft;
+    catchSpawner = setInterval(spawnCatchItem, 700);
+    const fallLoop = setInterval(catchTick, 40);
+    catchTimer = setInterval(()=>{
+      timeLeft--;
+      catchTimeEl.textContent = Math.max(timeLeft, 0);
+      if(timeLeft <= 0){
+        clearInterval(catchTimer);
+        clearInterval(catchSpawner);
+        clearInterval(fallLoop);
+        catchActive = false;
+        catchFallers.forEach(el=> el.remove());
+        catchFallers = [];
+        if(catchScore >= 8) burst(100);
+      }
+    }, 1000);
+  });
+
+  // Hidden autoplay background music, synthesized so no external file is needed
+  const noteFreq = {
+    C4:261.63, D4:293.66, E4:329.63, F4:349.23, G4:392.00, A4:440.00, B4:493.88,
+    C5:523.25, D5:587.33, E5:659.25, F5:698.46, G5:783.99
+  };
+  const melody = [
+    ['G4',0.4],['G4',0.4],['A4',0.8],['G4',0.8],['C5',0.8],['B4',1.4],
+    ['G4',0.4],['G4',0.4],['A4',0.8],['G4',0.8],['D5',0.8],['C5',1.4],
+    ['G4',0.4],['G4',0.4],['G5',0.8],['E5',0.8],['C5',0.8],['B4',0.8],['A4',1.2],
+    ['F5',0.4],['F5',0.4],['E5',0.8],['C5',0.8],['D5',0.8],['C5',1.6]
+  ];
+  let audioCtx = null;
+  let musicStarted = false;
+
+  function scheduleMelody(startTime){
+    let t = startTime;
+    melody.forEach(([note, dur])=>{
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = noteFreq[note];
+      gain.gain.setValueAtTime(0, t);
+      gain.gain.linearRampToValueAtTime(0.06, t + 0.05);
+      gain.gain.linearRampToValueAtTime(0, t + dur * 0.9);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(t);
+      osc.stop(t + dur);
+      t += dur;
+    });
+    return t;
+  }
+
+  function loopMelody(){
+    const endTime = scheduleMelody(audioCtx.currentTime + 0.1);
+    const totalDur = endTime - audioCtx.currentTime;
+    setTimeout(loopMelody, Math.max(500, (totalDur - 0.1) * 1000));
+  }
+
+  function startMusic(){
+    if(musicStarted) return;
+    musicStarted = true;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    loopMelody();
+  }
+
+  // Try to autoplay immediately; browsers that block it will need one silent first interaction
+  startMusic();
+  ['click','touchstart','keydown'].forEach(evt=>{
+    document.addEventListener(evt, function resumeAudio(){
+      if(!audioCtx) startMusic();
+      else if(audioCtx.state === 'suspended') audioCtx.resume();
+    }, { once:true });
+  });
+</script>
+
+</body>
+</html>
