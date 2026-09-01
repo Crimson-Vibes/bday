@@ -446,15 +446,6 @@ Jaldi IRL milne ka scene banate hain mere bhai, tab tak full chill kar aur apna 
     }
   });
 
-  // "Uda do balloons" button just re-triggers balloon animation by cloning
-  document.getElementById('danceBtn').addEventListener('click', ()=>{
-    document.querySelectorAll('.balloon').forEach(b=>{
-      b.style.animation = 'none';
-      void b.offsetWidth;
-      b.style.animation = null;
-    });
-    burst(60);
-  });
 
   // Memory Match game
   const memoryEmojis = ['🎂','🎁','🎈','🎉','🕯️','🎊','🍰','🥳'];
